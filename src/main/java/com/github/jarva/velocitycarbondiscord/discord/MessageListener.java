@@ -344,6 +344,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private void sendBotMessageToDiscord(Component message) {
+        if (message == null || PlaceholderUtil.plainText(message).isBlank()) return;
         TextChannel textChannel = getClient().getTextChannelById(this.config.channelId());
         if (textChannel != null) {
             textChannel.sendMessage(PlaceholderUtil.plainText(message)).queue();
