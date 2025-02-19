@@ -30,6 +30,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.WebhookClient;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.sticker.Sticker;
+import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
@@ -127,6 +129,14 @@ public class MessageListener extends ListenerAdapter {
                 TagResolver attachmentExpansion = builder.tag("attachment_url", PlaceholderUtil.wrapString(attachment.getUrl())).build();
                 Component chunk = PlaceholderUtil.resolvePlaceholders(this.config.attachmentFormat(), attachmentExpansion);
                 attachments = attachments.append(chunk);
+            }
+            for (StickerItem sticker : message.getStickers()) {
+                //make sure the sticker isn't LOTTIE because it uses client side rendering
+                if (sticker.getFormatType() != Sticker.StickerFormat.LOTTIE && sticker.getFormatType() != Sticker.StickerFormat.UNKNOWN) {
+                    TagResolver stickerExpansion = builder.tag("attachment_url", PlaceholderUtil.wrapString(sticker.getIconUrl())).build();
+                    Component chunk = PlaceholderUtil.resolvePlaceholders(this.config.attachmentFormat(), stickerExpansion);
+                    attachments = attachments.append(chunk);
+                }
             }
         }
 
